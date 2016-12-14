@@ -8,7 +8,7 @@ app.use(bodyParser.json({limit: '64mb'}));
 
 app.use((req, res, next) => {
   const route = routes.find(r => r.method.toLowerCase() === req.method.toLowerCase() 
-    && r.path === req.path);
+    && r.path === req.path); // @TODO make regex match with passing through req.params
   if (!route) {
     return res.status(404).end();
   }
