@@ -1,23 +1,30 @@
 // @flow
 
-type Body<T> = T;
+import type {Body, RouteType} from '../types';
 
-export type Parameters = {
-  user: Body<{
-    login: string,
-    pass: string
-  }>,
-  fuck: Body<string>
+type User = {
+  login: string,
+  pass: string
 };
 
-export type Route = {
+export type Parameters = {
+  user: Body<User>
+};
+
+type Route = {
+  path: string,
+  method: string,
+  produces: ?string
+}
+
+export const route: Route = {
   path: '/login',
   method: 'post',
   produces: 'text/plain'
-}
+};
 
 export type Response = string;
 
-module.exports = (params: Parameters): Response => {
+module.exports.controller = (params: Parameters): Response => {
   return `Hi, ${params.user.login}`;
 }

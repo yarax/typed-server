@@ -2,6 +2,7 @@
   "presets": ["es2015"],
   "plugins": [
     "syntax-flow",
+    "flopi",
     "tcomb",
     "transform-flow-strip-types"
   ]

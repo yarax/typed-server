@@ -2,22 +2,25 @@
 
 const express = require('express');
 const app = express();
-const routes = require('./routes/users');
+const reqDir = require('require-dir');
+const routes = reqDir(`${__dirname}/routes`);
 const bodyParser = require('body-parser');
 app.use(bodyParser.json({limit: '64mb'}));
 
+function routeMatch(req, route) {
+  return route.method.toLowerCase() === req.method.toLowerCase() && route.path === req.path;
+}
+
 app.use((req, res, next) => {
-  const route = routes.find(r => r.method.toLowerCase() === req.method.toLowerCase() 
-    && r.path === req.path); // @TODO make regex match with passing through req.params
-  if (!route) {
+  const routeName = Object.keys(routes).find(key => {
+    return routeMatch(req, routes[key].route);
+  });
+  if (!routeName) {
     return res.status(404).end();
   }
-  const params = Object
-    .keys(route.parameters)
-    .reduce((res: Object, paramName: string) => {
-      res[paramName] = route.parameters[paramName](req, paramName);
-      return res;
-    }, {});
+  const route = routes[routeName];
+
+  const params = route.parameters(req);
   let response;
   try {
     response = route.controller(params);
@@ -26,10 +29,11 @@ app.use((req, res, next) => {
   }
   // set cookie
   // set status
-  res.send(response.result);
+  res.send(response);
 });
 
 app.use((err, req, res, next) => {
+  console.log(err);
   res.status(500).send(err.message);
 });
 

@@ -1,17 +1,7 @@
-export type Response<T> = {
-  result: T,
-  headers?: {[string]: string}, // @TODO all headers as type
-  status?: number
-}
+export type Body<T> = T;
 
-export type Extract<T> = $ObjMap<T, ExtractCodomain>
-
-export type Route = {
+export type RouteType = {
   path: string,
   method: string,
-  parameters: Object,
-  controller: Function
+  produces: ?string
 }
-
-export type Handler = (req: any, param: string) => any
-export type ExtractCodomain = <V>(v: any) => Handler;
